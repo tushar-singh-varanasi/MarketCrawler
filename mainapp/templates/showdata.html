@@ -1,0 +1,92 @@
+
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Data</title>
+  <!-- Include Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Stock Data</h1>
+
+    <div>
+      <h2>NSE Live Data</h2>
+      <p id="nse_live_data"></p>
+      <p id="nse_live_data_change"></p>
+    </div>
+
+    <div id="table-container"></div>
+  </div>
+
+  <!-- Include Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // script.js
+
+// Function to fetch data using AJAX
+function fetchData() {
+  // Send an AJAX request to the Django view URL
+  fetch('/http://localhost:8000/show/') // Replace '/your-url/' with the actual URL path for your Django view
+    .then(response => response.json())
+    .then(data => {
+      // Update the DOM with the fetched data
+      document.getElementById('nse_live_data').textContent = data.nse_live_data;
+      document.getElementById('nse_live_data_change').textContent = data.nse_live_data_change;
+
+      // Build the HTML table dynamically
+      const tableData = data.df;
+      const tableContainer = document.getElementById('table-container');
+      tableContainer.innerHTML = '';
+
+      if (tableData) {
+        const table = document.createElement('table');
+        table.classList.add('table', 'table-striped');
+
+        // Create table headers
+        const headerRow = document.createElement('thead').insertRow();
+        Object.keys(tableData).forEach(column => {
+          const th = document.createElement('th');
+          th.textContent = column;
+          headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        // Create table body
+        const tbody = document.createElement('tbody');
+        const rowKeys = Object.keys(tableData[Object.keys(tableData)[0]]);
+        const rowCount = tableData[rowKeys[0]].length;
+        for (let i = 0; i < rowCount; i++) {
+          const row = tbody.insertRow();
+          rowKeys.forEach(key => {
+            const cell = row.insertCell();
+            cell.textContent = tableData[key][i];
+          });
+        }
+        table.appendChild(tbody);
+
+        // Append the table to the container
+        tableContainer.appendChild(table);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+// Call the fetchData function to initially load the data
+fetchData();
+
+// Set an interval to fetch data every 5 seconds (adjust as needed)
+setInterval(fetchData, 5000);
+
+  </script>
+</body>
+
+</html>
