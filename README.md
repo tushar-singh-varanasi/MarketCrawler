@@ -1,6 +1,6 @@
 # MarketCrawler
 
-Welcome to the GitHub repository for our Yahoo Finance Stocks Data Web Scraper and Display project. 
+Welcome to the GitHub repository for our Yahoo Finance Stocks Data Web Scraper . 
 This project aims to scrape stock data from Yahoo Finance and display it on a custom webpage.
 The technology stack includes Django, Python, BeautifulSoup, and Bootstrap, and JavaScript offering a user-friendly interface for exploring stock information.
 
